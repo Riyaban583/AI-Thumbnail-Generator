@@ -7,7 +7,9 @@ import MongoStore from "connect-mongo";
 
 import AuthRouter from "./routes/AuthRoutes";
 import ThumbnailRouter from "./routes/ThumbnailRoutes";
-import UserRouter from "./routes/UserRoutes"
+import UserRouter from "./routes/UserRoutes";
+// 1. Import the ChatRouter
+import ChatRouter from "./routes/ChatRoutes"; 
 
 declare module "express-session" {
   interface SessionData {
@@ -48,7 +50,9 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", AuthRouter);
 app.use("/api/thumbnail", ThumbnailRouter);
-app.use("/api/user",UserRouter);
+app.use("/api/user", UserRouter);
+// 2. Register the Chat Route
+app.use("/api/chat", ChatRouter); 
 
 const port = process.env.PORT || 3000;
 

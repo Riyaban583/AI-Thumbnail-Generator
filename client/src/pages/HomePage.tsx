@@ -4,6 +4,8 @@ import TestimonialSection from "../sections/TestimonialSection";
 import PricingSection from "../sections/PricingSection";
 import ContactSection from "../sections/ContactSection";
 import CTASection from "../sections/CTASection";
+import ChatBot from "../components/ChatBot";
+
 
 export default function HomePage() {
   return (
@@ -12,6 +14,7 @@ export default function HomePage() {
       <FeaturesSection />
       <TestimonialSection />
       <PricingSection />
+      <ChatBot />
 
       {/* 🔥 CONTACT SECTION (ANCHOR TARGET) */}
       <div id="contact">

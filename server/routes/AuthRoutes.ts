@@ -11,7 +11,10 @@ const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", LoginUser);
-router.post("/verify", protect, VerifyUser);
+
+// ✅ FIX: Remove 'protect' here so the controller can handle guest users gracefully
+router.get("/verify", VerifyUser); 
+
 router.post("/logout", protect, LogoutUser);
 
 export default router;

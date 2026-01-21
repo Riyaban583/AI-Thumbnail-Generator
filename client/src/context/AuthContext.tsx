@@ -57,8 +57,9 @@ export const AuthProvider = ({
       }
 
       toast.success(data.message);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
@@ -81,8 +82,9 @@ export const AuthProvider = ({
       }
 
       toast.success(data.message);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 
@@ -104,8 +106,15 @@ export const AuthProvider = ({
         setUser(data.user as IUser);
         setIsLoggedIn(true);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      // ✅ FIX: Silently handle 401 errors (User not logged in)
+      if (error.response && error.response.status === 401) {
+        setIsLoggedIn(false);
+        setUser(null);
+      } else {
+        // Only log real errors (like network connection refused)
+        console.log("Session check failed:", error);
+      }
     }
   };
 

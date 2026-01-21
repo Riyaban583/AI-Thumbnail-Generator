@@ -1,22 +1,25 @@
 import { Request, Response } from "express";
-import User from "../models/User.js";
+import User from "../models/User";
 import bcrypt from "bcrypt";
 
-// Controllers For User Registration
-export const registerUser = async (req: Request, res: Response) => {
+// ============================
+// 📝 REGISTER USER
+// ============================
+export const registerUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const { name, email, password } = req.body;
 
-    // find user by email
+    // Check if user exists
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Encrypt the password
+    // Encrypt password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user
     const newUser = new User({
       name,
       email,
@@ -25,9 +28,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    // setting user data in session
+    // Set session
+    // @ts-ignore - Ignoring TS error for session extension for now
     req.session.isLoggedIn = true;
-    req.session.userId = newUser._id;
+    req.session.userId = newUser._id.toString();
 
     return res.json({
       message: "Account created successfully",
@@ -38,38 +42,31 @@ export const registerUser = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
-// Controllers For User Login
-export const LoginUser = async (req: Request, res: Response) => {
+// ============================
+// 🔑 LOGIN USER
+// ============================
+export const LoginUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
 
-    // find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user.password
-    );
-
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res
-        .status(400)
-        .json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // setting user data in session
+    // Set session
     req.session.isLoggedIn = true;
-    req.session.userId = user._id;
+    req.session.userId = user._id.toString();
 
     return res.json({
       message: "Login successfully",
@@ -80,36 +77,49 @@ export const LoginUser = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
-// Controllers For User Logout
-export const LogoutUser = async (req: Request, res: Response) => {
+// ============================
+// 🚪 LOGOUT USER
+// ============================
+export const LogoutUser = async (req: Request, res: Response): Promise<any> => {
   req.session.destroy((error: any) => {
     if (error) {
-      console.log(error);
-      return res.status(500).json({ message: error.message });
+      console.error(error);
+      return res.status(500).json({ message: "Logout failed" });
     }
     return res.json({ message: "Logout successful" });
   });
 };
 
-// Controllers For User Verify
-export const VerifyUser = async (req: Request, res: Response) => {
+// ============================
+// ✅ VERIFY USER (Fixes 401 Console Error)
+// ============================
+export const VerifyUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { userId } = req.session;
+    // The 'protect' middleware puts the user object in req.user
+    const user = (req as any).user;
 
-    const user = await User.findById(userId).select("-password");
-
+    // If user is not logged in, return 200 OK with isLoggedIn: false
+    // This prevents the red error in browser console
     if (!user) {
-      return res.status(400).json({ message: "Invalid user" });
+      return res.status(200).json({ isLoggedIn: false, user: null });
     }
 
-    return res.json({ user });
+    return res.status(200).json({
+      isLoggedIn: true,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    // Only return 500 for actual server crashes
+    return res.status(500).json({ isLoggedIn: false, message: "Server Error" });
   }
 };
