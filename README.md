@@ -42,6 +42,7 @@
 | 🔐 **Authentication** | Secure user login and signup with JWT |
 | 📂 **Image Upload** | Upload and enhance your own images |
 | ⚡ **Modern UI** | Sleek, responsive interface built with React + TypeScript |
+| 💬 **AI Chatbot** | Floating chatbot assistant on homepage for instant help and guidance |
 | 🌙 **Dark Mode** | Eye-friendly dark theme (optional) |
 
 ---
@@ -81,6 +82,10 @@ THUMBLIFY/
 │   ├── src/
 │   │   ├── assets/          # Images, icons, fonts
 │   │   ├── components/      # Reusable UI components
+│   │   │   ├── Chatbot/    # AI chatbot component
+│   │   │   ├── Header/     # Navigation header
+│   │   │   ├── Footer/     # Page footer
+│   │   │   └── ...         # Other components
 │   │   ├── configs/         # Configuration files
 │   │   ├── context/         # React Context providers
 │   │   ├── data/            # Static data & constants
@@ -121,6 +126,15 @@ THUMBLIFY/
 
 ---
 
+## 🚀 Installation
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+- **Node.js** (v18 or higher)
+- **npm** or **yarn**
+- **MongoDB** (local or Atlas)
+- **Gemini API Key** from [Google AI Studio](https://ai.google.dev/)
 ## 📖 Usage
 
 ### Quick Start Guide
@@ -128,17 +142,26 @@ THUMBLIFY/
 1. **Sign Up / Login**
    - Create a new account or login with existing credentials
 
-2. **Generate Thumbnail**
+2. **Use AI Chatbot (Homepage)**
+   - Click on the floating chatbot icon at the bottom-right corner
+   - Ask questions about features, get guidance, or troubleshoot issues
+   - Available 24/7 for instant support
+
+3. **Generate Thumbnail**
    - Navigate to the generation page
    - Enter a descriptive prompt (e.g., "Epic gaming thumbnail with neon effects")
    - Select style, color scheme, and aspect ratio
    - Click "Generate"
 
-3. **Preview & Download**
+4. **Preview & Download**
    - View the generated thumbnail
    - Make adjustments if needed
    - Download in your preferred format
 
+### API Endpoints
+
+<details>
+<summary>View API Documentation</summary>
 
 #### Authentication
 ```http
@@ -155,6 +178,12 @@ GET  /api/thumbnails/:id            # Get specific thumbnail
 DELETE /api/thumbnails/:id          # Delete thumbnail
 ```
 
+#### Chatbot
+```http
+POST /api/chatbot/message           # Send message to AI chatbot
+GET  /api/chatbot/history           # Get chat history (requires auth)
+```
+
 </details>
 
 ---
@@ -166,6 +195,7 @@ DELETE /api/thumbnails/:id          # Delete thumbnail
 - **Digital Agencies** - Quick mockups for client presentations
 - **Bloggers** - Featured images for blog posts
 - **Course Creators** - Professional course thumbnails
+- **First-time Users** - Get instant help via the AI chatbot assistant
 
 ---
 
@@ -178,26 +208,6 @@ DELETE /api/thumbnails/:id          # Delete thumbnail
 - ✅ CORS configuration
 - ✅ Rate limiting on API endpoints
 - ✅ `.gitignore` for sensitive files
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Development Guidelines
-
-- Follow TypeScript best practices
-- Write meaningful commit messages
-- Add comments for complex logic
-- Update documentation as needed
-- Test your changes before submitting PR
 
 ---
 
